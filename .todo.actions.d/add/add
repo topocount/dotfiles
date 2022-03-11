@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# create the date string
+d=`date +%Y-%m-%d`
+echo "test " $@ >> ./todo.log
+if [ $1 == "usage" ]
+then
+	exit 0
+fi
+# add it to the todo list with a date infront
+todo.sh command add $d "${@:2}"
+
