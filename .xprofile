@@ -1,0 +1,25 @@
+# disable bell
+xset -b
+xset fp+ /usr/share/fonts/noto
+xsetroot -solid black
+if [ -n "$DESKTOP_SESSION" ];then
+    eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK
+fi
+
+# enable picom and backgrounds for i3
+# this is now configured in the i3 config file
+# [[ $DESKTOP_SESSION == "i3" ]] && picom -b
+
+# GTK Dark Theme
+export GTK_THEME=Adwaita:dark
+export GDK_USE_XFT=1
+# enable redshift
+nohup redshift & disown
+
+# start light-locker
+# Not needed with GDM
+# nohup light-locker & disown
+
+# optimize desktop for monitor setup
+# autorandr --change

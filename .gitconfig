@@ -1,0 +1,23 @@
+[user]
+	email = 17910833+topocount@users.noreply.github.com
+	name = Kevin Siegler
+	signingkey = 4C2753E07C0A44A9
+[commit]
+	gpgsign = false
+[alias]
+	please = push --force-with-lease
+	contributions = log --grep=\"[Bb]ump\" --invert-grep --pretty=oneline
+[core]
+	excludesfile = /home/kevin/.gitignore_global
+[pull]
+	ff = only
+[init]
+	defaultBranch = trunk
+[diff]
+	tool = nvimdiff
+[merge]
+	tool = nvimdiff
+[credential]
+	helper = /usr/lib/git-core/git-credential-gnome-keyring
+[pager]
+	config = false
