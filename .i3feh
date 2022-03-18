@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export TERM=linux
+
+watch -n 900 feh --randomize --no-fehbg --bg-fill /home/kevin/Dropbox/4k_backgrounds/desktop/Backgrounds/*
