@@ -7,6 +7,7 @@
 [alias]
 	please = push --force-with-lease
 	contributions = log --grep=\"[Bb]ump\" --invert-grep --pretty=oneline
+	graph = log --graph --oneline --decorate
 [core]
 	excludesfile = /home/kevin/.gitignore_global
 [pull]
@@ -17,8 +18,6 @@
 	tool = nvimdiff
 [merge]
 	tool = nvimdiff
-[credential]
-	helper = /usr/lib/git-core/git-credential-gnome-keyring
 [pager]
 	config = false
 [mergetool]
