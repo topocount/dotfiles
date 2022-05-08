@@ -21,3 +21,5 @@
 	helper = /usr/lib/git-core/git-credential-gnome-keyring
 [pager]
 	config = false
+[mergetool]
+	keepBackup = false

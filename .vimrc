@@ -41,6 +41,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'preservim/nerdtree'
 " Plug 'ocaml/vim-ocaml'
 Plug 'tomlion/vim-solidity'
+Plug 'ryanoasis/vim-devicons'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   let g:deoplete#enable_at_startup = 1
@@ -54,6 +55,10 @@ set tabstop=2
 set shiftwidth=2 shiftround
 set expandtab
 set cindent
+
+" code folding
+set foldenable
+set foldmethod=indent
 
 " Windows
 set splitright " new vsplits open on right
@@ -69,8 +74,9 @@ let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-let g:airline_symbols.linenr = ' ¶:'
-"let g:airline_symbols.linenr = ' :'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.linenr = ' '
+" let g:airline_symbols.linenr = ' ¶:'
 
 " Line number coloring
 set cursorline

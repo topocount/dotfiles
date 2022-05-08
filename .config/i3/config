@@ -253,3 +253,5 @@ bindsym --release Shift+Print exec flameshot full -p /home/kevin/Pictures/screen
 default_border pixel 2
 default_floating_border normal
 hide_edge_borders smart
+# class                 border  backgr. text    indicator child_border
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #4a148c

@@ -171,6 +171,9 @@ export function setup_nvm () {
 # mac gsed compat with coreutil sed
 export gsed=sed
 
+# default to vim-bindings in gnu info
+alias info="info --vi-keys"
+
 # Rootless Docker
 # Can't seem to get this working yet
 # export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
