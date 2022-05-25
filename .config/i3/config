@@ -75,7 +75,7 @@ bindsym $mod+Mod1+l exec xscreensaver-command -lock
 # sleep
 # bindsym $mod+Mod1+Delete exec light-locker-command -l && systemctl suspend
 # bindsym $mod+Mod1+Delete exec /home/kevin/lock.sh && systemctl suspend
-bindsym $mod+Mod1+Delete exec xscreensaver-command -lock && systemctl suspend
+bindsym $mod+Mod1+Delete exec systemctl suspend
 
 
 # Media player controls
@@ -254,4 +254,4 @@ default_border pixel 2
 default_floating_border normal
 hide_edge_borders smart
 # class                 border  backgr. text    indicator child_border
-client.focused          #4c7899 #285577 #ffffff #2e9ef4   #4a148c
+client.focused          #4a148c #4a148c #ffffff #8e7cc3   #4a148c
