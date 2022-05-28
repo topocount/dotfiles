@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# shellcheck disable=SC2034
+export BG_COLOR=PURPLE
+Environment=xorg
+
+export DESKTOP_SESSION=i3
+export XDG_SESSION_DESKTOP=i3
+. /home/kevin/.profile
+. /home/kevin/.xprofile
+
+export BROWSER=firefox-developer-edition
+export EDITOR=nvim
+
+exec dbus-launch i3
+
+# vim: ft=sh
