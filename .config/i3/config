@@ -44,6 +44,9 @@ exec --no-startup-id blueman-applet
 # flameshot
 exec --no-startup-id flameshot
 
+# frame
+exec --no-startup-id frame-eth
+
 # start sleek todo.txt UI
 # exec --no-startup-id sleek
 
@@ -66,6 +69,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 bindsym $mod+Mod1+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym $mod+Mod1+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym $mod+Mod1+End exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym Ctrl+$mod+Mod1+Down exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # lock screen
 # bindsym $mod+Mod1+l exec light-locker-command -l
@@ -79,7 +83,7 @@ bindsym $mod+Mod1+Delete exec systemctl suspend
 
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous

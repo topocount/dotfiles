@@ -16,6 +16,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'godlygeek/tabular'
+Plug 'neovim/nvim-lspconfig'
 Plug 'plasticboy/vim-markdown'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
@@ -167,7 +168,7 @@ set wildignore+=*/docs/*
 
 " alias for definition lookups
 let g:ale_hover_to_preview = 1
-command Agd ALEGoToDefinition
+command Agd ALEGoToDefinition -split
 command Ah ALEHover
 
 " NERDTree shortcuts

@@ -194,3 +194,5 @@ export TMPDIR=/tmp
 [[ $XDG_SESSION_DESKTOP == i3* ]] && alias i3config="vi ~/.config/i3/config" &&
   alias lock="i3lock -t -i /home/kevin/Dropbox/'4k_backgrounds'/desktop/Backgrounds/lockscreen.png" &&
   alias snooze="lock && systemctl suspend"
+
+export PATH="$PATH:/home/kevin/.foundry/bin"
