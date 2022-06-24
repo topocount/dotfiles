@@ -6,6 +6,7 @@ Environment=xorg
 
 export DESKTOP_SESSION=i3
 export XDG_SESSION_DESKTOP=i3
+
 . ~/.profile
 . ~/.xprofile
 

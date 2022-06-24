@@ -162,7 +162,7 @@ alias scdev='node ~/Projects/sourceCred/core-testing/packages/sourcecred/bin/sou
 alias serve="python3 -m http.server 6060"
 
 # set up NVM
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$HOME/.config/nvm"
 export function setup_nvm () {
  [ -s "$NVM_DIR/nvm.sh" ] &&
   \. "$NVM_DIR/nvm.sh"
