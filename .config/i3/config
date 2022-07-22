@@ -45,7 +45,7 @@ exec --no-startup-id blueman-applet
 exec --no-startup-id flameshot
 
 # frame
-exec --no-startup-id frame-eth
+exec --no-startup-id frame
 
 # start sleek todo.txt UI
 # exec --no-startup-id sleek

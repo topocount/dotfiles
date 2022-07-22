@@ -6,8 +6,8 @@ Environment=xorg
 
 export DESKTOP_SESSION=i3
 export XDG_SESSION_DESKTOP=i3
-. /home/kevin/.profile
-. /home/kevin/.xprofile
+. ~/.profile
+. ~/.xprofile
 
 export BROWSER=firefox-developer-edition
 export EDITOR=nvim

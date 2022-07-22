@@ -1,6 +1,5 @@
-# disable bell
 xset -b
-xset fp+ /usr/share/fonts/noto
+# xset fp+ /usr/share/fonts/noto
 xsetroot -solid black
 if [ -n "$DESKTOP_SESSION" ];then
     # disabled: migrating to SSH agent
