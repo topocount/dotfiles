@@ -244,6 +244,8 @@ bar {
         tray_output primary
 }
 
+# get Eth Price
+exec --no-startup-id ~/.local/i3eth.sh
 # set a background
 exec --no-startup-id ~/.i3feh
 exec --no-startup-id picom -b

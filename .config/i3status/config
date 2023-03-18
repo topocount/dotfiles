@@ -20,6 +20,7 @@ order += "cpu_temperature 0"
 order += "memory"
 order += "volume master"
 order += "battery all"
+order += "read_file ETH"
 # order += "path_exists VPN"
 order += "path_exists NORDLYNX"
 order += "tztime local"
@@ -41,6 +42,14 @@ path_exists NORDLYNX {
      path = "/proc/sys/net/ipv4/conf/nordlynx"
      format = "🔒"
      format_down = ""
+}
+
+read_file ETH {
+  format = %content
+  format_bad = ""
+  path = "~/.local/EthPrice.txt"
+  Max_characters = 15
+
 }
 
 # path_exists VPN {
