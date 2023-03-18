@@ -14,7 +14,7 @@ export PATH=$PATH:$HOME/.todo
 # Add ruby to path
 export PATH=$PATH:$HOME/.gem/ruby/3.0.0/bin
 # Add AppImages to the path
-export PATH=$PATH:/opt/appimages:~/Apps
+export PATH=$PATH:/opt/appimages:$HOME/Apps
 
 # Add hardhat solc binaries to path
 export PATH=$PATH:~/.cache/hardhat-nodejs/compilers/linux-amd64
@@ -24,7 +24,7 @@ export ZSH="/home/kevin/.oh-my-zsh"
 
 # GTK Dark Theme
 # This is now done in .xprofile
-# export GTK_THEME=Adwaita:dark
+export GTK_THEME=Adwaita:dark
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -164,7 +164,8 @@ alias serve="python3 -m http.server 6060"
 # set up NVM
 export NVM_DIR="$HOME/.config/nvm"
 export function setup_nvm () {
- [ -s "$NVM_DIR/nvm.sh" ] &&
+  export SHARP_IGNORE_GLOBAL_LIBVIPS=1
+  [ -s "$NVM_DIR/nvm.sh" ] &&
   \. "$NVM_DIR/nvm.sh"
 } # This loads nvm
 
@@ -173,6 +174,7 @@ export gsed=sed
 
 # default to vim-bindings in gnu info
 alias info="info --vi-keys"
+alias vi=nvim
 
 # Rootless Docker
 # Can't seem to get this working yet
@@ -187,8 +189,6 @@ test -r /home/kevin/.opam/opam-init/init.zsh && . /home/kevin/.opam/opam-init/in
 # For Docker host connections
 export DOCKER_GATEWAY_HOST=172.17.0.1
 
-export SHARP_IGNORE_GLOBAL_LIBVIPS=1
-
 # Temp dir config
 export TMPDIR=/tmp
 
@@ -198,3 +198,45 @@ export TMPDIR=/tmp
   alias snooze="lock && systemctl suspend"
 
 export PATH="$PATH:/home/kevin/.foundry/bin"
+export PATH="$PATH:/home/kevin/.local/share/gem/ruby/3.0.0/bin"
+
+PATH="/home/kevin/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/kevin/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/kevin/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/kevin/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/kevin/perl5"; export PERL_MM_OPT;
+
+# Created by `pipx` on 2022-07-22 14:13:21
+export PATH="$PATH:/home/kevin/.local/bin"
+
+# pyenv status indicator
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+#compdef gt
+###-begin-gt-completions-###
+#
+# yargs command completion script
+#
+# Installation: /home/kevin/.yarn/bin/gt completion >> ~/.zshrc
+#    or /home/kevin/.yarn/bin/gt completion >> ~/.zprofile on OSX.
+#
+_gt_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" /home/kevin/.yarn/bin/gt --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _gt_yargs_completions gt
+###-end-gt-completions-###
+
+# pnpm
+export PNPM_HOME="/home/kevin/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

@@ -10,7 +10,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-
+let g:CommandTPreferredImplementation='ruby'
 " set the runtime path to include Vundle and initialize
 "set rtp+=~/.vim/bundle/Vundle.vim
 call plug#begin('~/.vim/plugged')
@@ -35,8 +35,11 @@ Plug 'suan/vim-instant-markdown', {'rtp': 'after'}
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 Plug 'tfnico/vim-gradle'
 Plug 'wincent/command-t', {
-      \ 'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
+      \ 'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make',
       \ }
+      " for the new non-ruby mode
+      "\ 'do': 'cd lua/wincent/commandt/lib/ && make'
+      "\ }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'airblade/vim-gitgutter'
 Plug 'preservim/nerdtree'
@@ -50,6 +53,9 @@ endif
 " All Plugins must be added before the following line
 call plug#end()            " required
 filetype plugin indent on    " required
+
+"Disable error message output for autocomplete lookups
+set shortmess+=c
 
 " Tabs
 set tabstop=2
@@ -70,6 +76,8 @@ set noshowmode
 " Line numbering
 set number
 
+" airline: remove branch name form bar
+let g:airline#extensions#branch#enabled = 0
 " fonts for vim-airline
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
@@ -77,6 +85,8 @@ if !exists('g:airline_symbols')
 endif
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.linenr = ' '
+" let g:airline_symbols.branch = ''
+let g:airline_symbols.branch = ''
 " let g:airline_symbols.linenr = ' ¶:'
 
 " Line number coloring
@@ -166,11 +176,17 @@ endif
 set wildignore+=*/node_modules/*
 set wildignore+=*/docs/*
 
+" command-t dismissal
+let g:CommandTCancelMap='<Esc>'
+
 " alias for definition lookups
 let g:ale_hover_to_preview = 1
 command Agd ALEGoToDefinition -split
 command Ag ALEGoToDefinition
 command Ah ALEHover
+
+" Rust config
+
 
 " NERDTree shortcuts
 command NT NERDTreeToggle

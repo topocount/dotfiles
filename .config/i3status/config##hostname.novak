@@ -1,0 +1,91 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        colors = true
+        interval = 5
+}
+
+order += "ipv6"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "disk /home"
+order += "load"
+order += "cpu_temperature 0"
+order += "memory"
+order += "volume master"
+order += "read_file ETH"
+# order += "path_exists VPN"
+order += "path_exists NORDLYNX"
+order += "tztime local"
+
+ipv6 {
+  format_down = ""
+}
+wireless _first_ {
+        format_up = "W:%ip (%bitrate)"
+        format_down = ""
+}
+
+ethernet _first_ {
+        format_up = "E:%ip"
+        format_down = ""
+}
+path_exists NORDLYNX {
+     # path exists when a VPN tunnel launched by nordvpn is active
+     path = "/proc/sys/net/ipv4/conf/nordlynx"
+     format = "🔒"
+     format_down = ""
+}
+
+read_file ETH {
+  format = %content
+  format_bad = ""
+  path = "~/.local/EthPrice.txt"
+  Max_characters = 15
+
+}
+
+# path_exists VPN {
+#      # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+#      path = "/proc/sys/net/ipv4/conf/tun0"
+#      format = "🔒"
+#      format_down = ""
+# }
+
+disk "/home" {
+        format = "💽%avail"
+}
+
+load {
+        format = "💪%1min"
+}
+
+cpu_temperature 0 {
+        format = "🌡️%degrees C"
+          path = "/sys/class/hwmon/hwmon2/temp3_input"
+}
+
+memory {
+        format = "⚡%available free"
+        threshold_degraded = "1G"
+        format_degraded = "MEMORY < %available"
+}
+
+
+volume master {
+                   format = "🔊%volume"
+                   format_muted = "🔇 muted (%volume)"
+                   device = "default"
+                   mixer = "Master"
+                   mixer_idx = 0
+           }
+
+tztime local {
+        format = "%A %B %e, %Y %H:%M %z"
+}

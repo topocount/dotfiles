@@ -1,15 +1,12 @@
 xset -b
-# xset fp+ /usr/share/fonts/noto
 xsetroot -solid black
-if [ -n "$DESKTOP_SESSION" ];then
-    # disabled: migrating to SSH agent
-    # eval $(gnome-keyring-daemon --start)
-    # export SSH_AUTH_SOCK
-fi
 
 # enable picom and backgrounds for i3
 # this is now configured in the i3 config file
 # [[ $DESKTOP_SESSION == "i3" ]] && picom -b
+
+# configure X
+xrdb ./.Xresources
 
 # GTK Dark Theme
 export GTK_THEME=Adwaita:dark
@@ -23,3 +20,6 @@ nohup redshift & disown
 
 # optimize desktop for monitor setup
 # autorandr --change
+./.screenlayout/main.sh
+
+# vim: ft=sh
