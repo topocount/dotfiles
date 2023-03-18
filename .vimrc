@@ -169,6 +169,7 @@ set wildignore+=*/docs/*
 " alias for definition lookups
 let g:ale_hover_to_preview = 1
 command Agd ALEGoToDefinition -split
+command Ag ALEGoToDefinition
 command Ah ALEHover
 
 " NERDTree shortcuts
@@ -218,3 +219,10 @@ let &t_EI = "\<Esc>[2 q"
 "   source "/home/kevin/.opam/default/share/ocp-indent/vim/indent/ocaml.vim"
 " endif
 " ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
+
+" Use legacy ruby in Command-T
+let g:CommandTPreferredImplementation='ruby'
+
+" remove octal formatting from vim
+" default config in nvim and vim 8.0
+" set nrformats-=octal

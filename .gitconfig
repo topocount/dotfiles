@@ -11,6 +11,7 @@
 	gone = ! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
 [core]
 	excludesfile = /home/kevin/.gitignore_global
+	editor = nvim
 [pull]
 	ff = only
 [init]

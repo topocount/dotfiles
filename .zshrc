@@ -187,6 +187,8 @@ test -r /home/kevin/.opam/opam-init/init.zsh && . /home/kevin/.opam/opam-init/in
 # For Docker host connections
 export DOCKER_GATEWAY_HOST=172.17.0.1
 
+export SHARP_IGNORE_GLOBAL_LIBVIPS=1
+
 # Temp dir config
 export TMPDIR=/tmp
 

@@ -55,6 +55,9 @@ bindsym $mod+w exec firefox-developer-edition
 bindsym $mod+Shift+w exec firefox-developer-edition --private-window
 # bindsym $mod+w exec firefox
 
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
 # map keepassxc
 bindsym $mod+p exec keepassxc
 
