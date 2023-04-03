@@ -169,7 +169,10 @@ export function setup_nvm () {
   export SHARP_IGNORE_GLOBAL_LIBVIPS=1
   [ -s "$NVM_DIR/nvm.sh" ] &&
   \. "$NVM_DIR/nvm.sh" &&
-  nvm use
+  nvm use;
+
+  # load nvm bash completions
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 } # This loads nvm
 
 # mac gsed compat with coreutil sed
@@ -243,4 +246,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# tmux nonsense for silencing stdout noise
 export DISABLE_AUTO_TITLE=true

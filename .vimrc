@@ -179,6 +179,9 @@ set wildignore+=*/docs/*
 " command-t dismissal
 let g:CommandTCancelMap='<Esc>'
 
+" enable link following
+let g:netrw_browsex_viewer= "xdg-open"
+
 " alias for definition lookups
 let g:ale_hover_to_preview = 1
 command Agd ALEGoToDefinition -split
