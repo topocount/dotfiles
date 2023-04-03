@@ -1,11 +1,11 @@
 session_name: hats
 windows:
 - focus: 'true'
-  layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
+  layout: 8da5,320x82,0,0{160x82,0,0,0,159x82,161,0,1}
   options: {}
   panes:
   - focus: 'true'
     shell_command: nvim
   - clear
-  start_directory: /home/kevin/Projects/guild/hats-protocol
-  window_name: main
+  start_directory: /home/kevin/Projects/hats-protocol
+  window_name: hats_main

@@ -1,0 +1,11 @@
+session_name: ape-bot
+windows:
+  - window_name: ape-bot
+    shell_command_before: cd ~/Projects/coordinape-discord-bot && setup_nvm
+    layout: 3695,320x82,0,0{234x82,0,0,0,85x82,235,0[85x26,235,0,1,85x27,235,27,2,85x27,235,55,3]}
+    panes:
+      - shell_command: nvim
+        focus: true
+      - yarn dev
+      - clear
+      - clear
