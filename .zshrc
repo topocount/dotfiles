@@ -120,6 +120,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias  nvpn=nordvpn
+alias pn=pnpm
+
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -166,7 +168,8 @@ export NVM_DIR="$HOME/.config/nvm"
 export function setup_nvm () {
   export SHARP_IGNORE_GLOBAL_LIBVIPS=1
   [ -s "$NVM_DIR/nvm.sh" ] &&
-  \. "$NVM_DIR/nvm.sh"
+  \. "$NVM_DIR/nvm.sh" &&
+  nvm use
 } # This loads nvm
 
 # mac gsed compat with coreutil sed
