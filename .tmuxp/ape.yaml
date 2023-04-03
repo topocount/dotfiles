@@ -1,0 +1,13 @@
+session_name: ape
+windows:
+- window_name: coordinape
+  shell_command_before: setup_nvm
+  layout: 3cb8,273x64,0,0{193x64,0,0,0,79x64,194,0[79x20,194,0,2,79x21,194,21,3,79x21,194,43,4]}
+  panes:
+  - focus: 'true'
+    shell_command: nvim
+  - yarn start
+  - clear
+  - clear
+  start_directory: /home/kevin/Projects/coordinape/coordinape
+  focus: true

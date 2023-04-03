@@ -1,0 +1,30 @@
+session_name: sona
+windows:
+- focus: 'true'
+  layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: nvim
+  - forge test
+  start_directory: /home/kevin/Projects/sona/core
+  shell_commmand_before: 'cd ~/Projects/sona/core'
+  window_name: core
+- window_name: tmono
+  layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: nvim
+  - clear
+  start_directory: /home/kevin/Projects/sona/tmono
+  shell_commmand_before: 'cd ~/Projects/sona/tmono && setup_nvm'
+- window_name: subgraph
+  layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: nvim
+  - clear
+  start_directory: /home/kevin/Projects/sona/subgraph
+  shell_commmand_before: 'cd ~/Projects/sona/subgraph && setup_nvm'
