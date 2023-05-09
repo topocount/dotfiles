@@ -273,3 +273,6 @@ default_floating_border pixel 4
 hide_edge_borders smart
 # class                 border  backgr. text    indicator child_border
 client.focused          #4a148c #4a148c #ffffff #8e7cc3   #4a148c
+
+# finally, lock on login
+exec xscreensaver-command -lock

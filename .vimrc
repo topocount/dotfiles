@@ -23,7 +23,11 @@ Plug 'rust-lang/rust.vim'
 Plug 'yuezk/vim-js'
 Plug 'jparise/vim-graphql'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html', 'solidity'] }
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
@@ -75,6 +79,10 @@ set noshowmode
 
 " Line numbering
 set number
+
+" prettier
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
 
 " airline: remove branch name form bar
 let g:airline#extensions#branch#enabled = 0
