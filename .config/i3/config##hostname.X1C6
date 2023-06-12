@@ -41,6 +41,8 @@ exec --no-startup-id nm-applet
 
 exec --no-startup-id pasystray
 
+exec --no-startup-id nordtray
+
 
 # start dropbox
 exec --no-startup-id dropbox
@@ -52,10 +54,7 @@ exec --no-startup-id blueman-applet
 exec --no-startup-id flameshot
 
 # frame
-# exec --no-startup-id frame
-
-# slack
-exec --no-startup-id slack
+exec --no-startup-id frame
 
 # start sleek todo.txt UI
 # exec --no-startup-id sleek
@@ -278,4 +277,4 @@ hide_edge_borders smart
 client.focused          #4a148c #4a148c #ffffff #8e7cc3   #4a148c
 
 # finally, lock on login
-exec xscreensaver-command -lock
+# exec xscreensaver-command -lock
