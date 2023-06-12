@@ -5,14 +5,17 @@ endif
 filetype off
 syntax on
 
+" These settings are unnecessary
+" set t_Co=256
+" set t_AB=^[[48;5;%dm
+" set t_AF=^[[38;5;%dm
+
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-let g:CommandTPreferredImplementation='ruby'
 " set the runtime path to include Vundle and initialize
-"set rtp+=~/.vim/bundle/Vundle.vim
 call plug#begin('~/.vim/plugged')
 
 Plug 'godlygeek/tabular'
@@ -20,9 +23,9 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'plasticboy/vim-markdown'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
-Plug 'yuezk/vim-js'
+" Plug 'yuezk/vim-js'
 Plug 'jparise/vim-graphql'
-Plug 'maxmellon/vim-jsx-pretty'
+" Plug 'maxmellon/vim-jsx-pretty'
 " Plug 'dense-analysis/ale'
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', {
@@ -46,13 +49,14 @@ Plug 'wincent/command-t', {
       "\ }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'airblade/vim-gitgutter'
-Plug 'preservim/nerdtree'
+" Plug 'preservim/nerdtree'
 " Plug 'ocaml/vim-ocaml'
 Plug 'tomlion/vim-solidity'
 Plug 'ryanoasis/vim-devicons'
+Plug 'patstockwell/vim-monokai-tasty'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  let g:deoplete#enable_at_startup = 1
+  let g:deoplete#enable_at_startup = 0
 endif
 " All Plugins must be added before the following line
 call plug#end()            " required
@@ -81,7 +85,7 @@ set noshowmode
 set number
 
 " prettier
-let g:prettier#autoformat = 1
+let g:prettier#autoformat = 0
 let g:prettier#autoformat_require_pragma = 0
 
 " airline: remove branch name form bar
@@ -134,9 +138,15 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_strikethrough = 0
 
 " gitgutter options
-highlight GitGutterAdd    guifg=#009900 ctermbg=2
-highlight GitGutterChange guifg=#bbbb00 ctermbg=3
-highlight GitGutterDelete guifg=#ff2222 ctermbg=1
+highlight GitGutterAdd    guifg=#009900 ctermbg=DarkGreen
+highlight GitGutterChange guifg=#bbbb00 ctermbg=DarkYellow
+highlight GitGutterDelete guifg=#ff2222 ctermbg=DarkRed
+
+" Float bg
+highlight NormalFloat ctermbg=DarkBlue
+highlight Pmenu ctermbg=DarkBlue ctermfg=White
+highlight PmenuKind ctermbg=DarkBlue ctermfg=White
+highlight PmenuExtra ctermbg=DarkBlue ctermfg=White
 
 " ALE options
 let g:ale_fix_on_save = 1
@@ -248,7 +258,10 @@ let &t_EI = "\<Esc>[2 q"
 " ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
 
 " Use legacy ruby in Command-T
-let g:CommandTPreferredImplementation='ruby'
+let g:CommandTPreferredImplementation='lua'
+nmap <silent> <Leader>t <Plug>(CommandT)
+nmap <silent> <Leader>b <Plug>(CommandTBuffer)
+nmap <silent> <Leader>j <Plug>(CommandTJump)
 
 " remove octal formatting from vim
 " default config in nvim and vim 8.0
