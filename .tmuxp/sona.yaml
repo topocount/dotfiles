@@ -11,19 +11,11 @@ windows:
         shell_command: nvim
       - make test
       - 
-  - window_name: tmono
+  - window_name: monorepo
     layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
     options: {}
     panes:
       - focus: "true"
         shell_command: nvim
       - 
-    start_directory: /home/kevin/Projects/sona/tmono
-  - window_name: subgraph
-    start_directory: /home/kevin/Projects/sona/subgraph
-    layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
-    options: {}
-    panes:
-      - focus: "true"
-        shell_command: nvim
-      - 
+    start_directory: /home/kevin/Projects/sona/monorepo

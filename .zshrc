@@ -472,3 +472,5 @@ if [ "$funcstack[1]" = "_doppler" ]; then
 fi
 
 HISTORY_IGNORE="(doppler secrets set*)"
+
+[ -f "/home/kevin/.ghcup/env" ] && source "/home/kevin/.ghcup/env" # ghcup-env
