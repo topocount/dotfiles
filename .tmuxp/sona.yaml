@@ -19,3 +19,11 @@ windows:
         shell_command: nvim
       - 
     start_directory: /home/kevin/Projects/sona/monorepo
+  - window_name: public
+    start_directory: /home/kevin/Projects/sona/public
+    layout: f67a,273x64,0,0{191x64,0,0,1,81x64,192,0,2}
+    options: {}
+    panes:
+      - focus: "true"
+        shell_command: nvim
+      - 

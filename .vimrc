@@ -19,14 +19,11 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'godlygeek/tabular'
-Plug 'neovim/nvim-lspconfig'
 Plug 'plasticboy/vim-markdown'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
-" Plug 'yuezk/vim-js'
 Plug 'jparise/vim-graphql'
 " Plug 'maxmellon/vim-jsx-pretty'
-" Plug 'dense-analysis/ale'
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install --frozen-lockfile --production',
@@ -51,19 +48,18 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'airblade/vim-gitgutter'
 " Plug 'preservim/nerdtree'
 " Plug 'ocaml/vim-ocaml'
-Plug 'tomlion/vim-solidity'
+" Plug 'tomlion/vim-solidity'
 Plug 'ryanoasis/vim-devicons'
 Plug 'patstockwell/vim-monokai-tasty'
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  let g:deoplete#enable_at_startup = 0
-endif
 " All Plugins must be added before the following line
 call plug#end()            " required
 filetype plugin indent on    " required
 
 "Disable error message output for autocomplete lookups
 set shortmess+=c
+
+" use tree in netrw
+let g:netrw_liststyle=3
 
 " Tabs
 set tabstop=2
@@ -74,9 +70,13 @@ set cindent
 " code folding
 set foldenable
 set foldmethod=indent
+set foldlevel=1
 
-" Windows
+" buffers
 set splitright " new vsplits open on right
+
+" keymapping prefs
+set timeoutlen=200
 
 " console options
 set noshowmode
@@ -130,12 +130,12 @@ set shell=/bin/zsh
 set go+=a
 
 " Markdown Syntax concealing
-set conceallevel=2
+set conceallevel=0
 
 " markdown config
 " markdown indentation
 let g:vim_markdown_new_list_item_indent = 0
-let g:vim_markdown_strikethrough = 0
+let g:vim_markdown_strikethrough = 1
 
 " gitgutter options
 highlight GitGutterAdd    guifg=#009900 ctermbg=DarkGreen
@@ -266,3 +266,20 @@ nmap <silent> <Leader>j <Plug>(CommandTJump)
 " remove octal formatting from vim
 " default config in nvim and vim 8.0
 " set nrformats-=octal
+
+" github copilot accept keymap
+imap <silent><script><expr> <space>g copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
+let g:copilot_filetypes = {
+\   '*': v:false,
+\   'javascript': v:true,
+\   'typescript': v:true,
+\   'typescriptreact': v:true,
+\   'javascriptreact': v:true,
+\   'python': v:true,
+\   'ruby': v:true,
+\   'go': v:true,
+\   'rust': v:true,
+\ }
+
+

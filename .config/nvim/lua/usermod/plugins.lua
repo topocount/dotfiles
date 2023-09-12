@@ -2,6 +2,7 @@ vim.cmd [[packadd packer.nvim]]
 local use = require('packer').use
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'
+  use 'github/copilot.vim'
   use "rafamadriz/friendly-snippets"
   use 'neovim/nvim-lspconfig' -- Collection of configurations for built-in LSP client
   use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
@@ -20,7 +21,7 @@ end)
 -- treesitter setup
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  -- ensure_installed =  "all",
+  ensure_installed =  {"typescript", "rust", "lua", "javascript", "solidity"},
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -66,7 +67,7 @@ local lspconfig = require 'lspconfig'
 local configs = require 'lspconfig.configs'
 
 -- solidity config
-configs.solidity = {
+configs.solidity_ls = {
   default_config = {
     cmd = {'nomicfoundation-solidity-language-server', '--stdio'},
     filetypes = { 'solidity' },
@@ -74,7 +75,7 @@ configs.solidity = {
     single_file_support = true,
   },
 }
-lspconfig.solidity.setup {}
+lspconfig.solidity_ls.setup { capabilites = capabilities }
 lspconfig.tsserver.setup {capabilities = capabilities}
 lspconfig.rust_analyzer.setup {capabilities = capabilities}
 lspconfig.vimls.setup{}
@@ -96,7 +97,7 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(4), -- Down
     -- C-b (back) C-f (forward) for snippet placeholder navigation.
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
+    ['<space>s'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
@@ -162,3 +163,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
   end,
 })
+
+-- vim.lsp.set_log_level(vim.log.levels.DEBUG)
+
