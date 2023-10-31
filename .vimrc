@@ -18,7 +18,7 @@ endif
 " set the runtime path to include Vundle and initialize
 call plug#begin('~/.vim/plugged')
 
-Plug 'godlygeek/tabular'
+" Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
@@ -38,12 +38,6 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'suan/vim-instant-markdown', {'rtp': 'after'}
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 Plug 'tfnico/vim-gradle'
-Plug 'wincent/command-t', {
-      \ 'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make',
-      \ }
-      " for the new non-ruby mode
-      "\ 'do': 'cd lua/wincent/commandt/lib/ && make'
-      "\ }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'airblade/vim-gitgutter'
 " Plug 'preservim/nerdtree'
@@ -87,6 +81,9 @@ set number
 " prettier
 let g:prettier#autoformat = 0
 let g:prettier#autoformat_require_pragma = 0
+
+" set pwd to project root if applicable
+autocmd BufEnter * :silent! Gcd
 
 " airline: remove branch name form bar
 let g:airline#extensions#branch#enabled = 0
@@ -148,12 +145,6 @@ highlight Pmenu ctermbg=DarkBlue ctermfg=White
 highlight PmenuKind ctermbg=DarkBlue ctermfg=White
 highlight PmenuExtra ctermbg=DarkBlue ctermfg=White
 
-" ALE options
-let g:ale_fix_on_save = 1
-let g:ale_fixers = {
-\	'*': ['remove_trailing_lines', 'trim_whitespace'],
-\}
-
 " OCAML merlin ALE integration
 if executable('opam')
   let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
@@ -194,9 +185,6 @@ endif
 set wildignore+=*/node_modules/*
 set wildignore+=*/docs/*
 
-" command-t dismissal
-let g:CommandTCancelMap='<Esc>'
-
 " enable link following
 let g:netrw_browsex_viewer= "xdg-open"
 
@@ -205,12 +193,6 @@ let g:ale_hover_to_preview = 1
 command Agd ALEGoToDefinition -split
 command Ag ALEGoToDefinition
 command Ah ALEHover
-
-" Rust config
-
-
-" NERDTree shortcuts
-command NT NERDTreeToggle
 
 " cursor modes
 " i beam for insert mode
@@ -257,12 +239,6 @@ let &t_EI = "\<Esc>[2 q"
 " endif
 " ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
 
-" Use legacy ruby in Command-T
-let g:CommandTPreferredImplementation='lua'
-nmap <silent> <Leader>t <Plug>(CommandT)
-nmap <silent> <Leader>b <Plug>(CommandTBuffer)
-nmap <silent> <Leader>j <Plug>(CommandTJump)
-
 " remove octal formatting from vim
 " default config in nvim and vim 8.0
 " set nrformats-=octal
@@ -281,5 +257,3 @@ let g:copilot_filetypes = {
 \   'go': v:true,
 \   'rust': v:true,
 \ }
-
-

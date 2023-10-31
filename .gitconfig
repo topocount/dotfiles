@@ -9,6 +9,8 @@
 	contributions = log --grep=\"[Bb]ump\" --invert-grep --pretty=oneline
 	graph = log --graph --oneline --decorate
 	gone = ! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
+	root = rev-parse --show-toplevel
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
 [core]
 	excludesfile = /home/kevin/.gitignore_global
 	editor = nvim

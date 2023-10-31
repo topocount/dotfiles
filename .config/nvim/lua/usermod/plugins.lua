@@ -2,26 +2,34 @@ vim.cmd [[packadd packer.nvim]]
 local use = require('packer').use
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'
+  use { 'wincent/command-t',
+    run = 'cd lua/wincent/commandt/lib && make' }
   use 'github/copilot.vim'
   use "rafamadriz/friendly-snippets"
-  use 'neovim/nvim-lspconfig' -- Collection of configurations for built-in LSP client
-  use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-  use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
+  use 'neovim/nvim-lspconfig'    -- Collection of configurations for built-in LSP client
+  use 'hrsh7th/nvim-cmp'         -- Autocompletion plugin
+  use 'hrsh7th/cmp-nvim-lsp'     -- LSP source for nvim-cmp
   use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
-  use 'L3MON4D3/LuaSnip' -- Snippets plugin
+  use 'L3MON4D3/LuaSnip'         -- Snippets plugin
   use { 'nvim-treesitter/nvim-treesitter',
-  run = function()
-    local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
-    ts_update()
-  end,
-}
+    run = function()
+      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+      ts_update()
+    end,
+  }
 end)
 
 
+-- command-t setup
+local commandT = require('wincent.commandt')
+commandT.setup {
+  vim.keymap.set('n', '<Leader>t', '<Plug>(CommandTRipgrep)')
+}
+
 -- treesitter setup
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  ensure_installed =  {"typescript", "rust", "lua", "javascript", "solidity"},
+  ensure_installed = { "typescript", "rust", "lua", "javascript", "solidity" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -43,7 +51,7 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = { "c", "rust" },
+    -- disable = { "c", "rust" },
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
     disable = function(lang, buf)
       local max_filesize = 100 * 1024 -- 100 KB
@@ -69,17 +77,48 @@ local configs = require 'lspconfig.configs'
 -- solidity config
 configs.solidity_ls = {
   default_config = {
-    cmd = {'nomicfoundation-solidity-language-server', '--stdio'},
+    cmd = { 'nomicfoundation-solidity-language-server', '--stdio' },
     filetypes = { 'solidity' },
     root_dir = lspconfig.util.find_git_ancestor,
     single_file_support = true,
   },
 }
 lspconfig.solidity_ls.setup { capabilites = capabilities }
-lspconfig.tsserver.setup {capabilities = capabilities}
-lspconfig.rust_analyzer.setup {capabilities = capabilities}
-lspconfig.vimls.setup{}
-lspconfig.rome.setup{}
+lspconfig.tsserver.setup { capabilities = capabilities }
+lspconfig.rust_analyzer.setup { capabilities = capabilities }
+lspconfig.vimls.setup {}
+-- rome not used by any projects at the moment
+-- lspconfig.rome.setup {}
+lspconfig.lua_ls.setup {
+  on_init = function(client)
+    local path = client.workspace_folders[1].name
+    if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+      client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using
+            -- (most likely LuaJIT in the case of Neovim)
+            version = 'LuaJIT'
+          },
+          -- Make the server aware of Neovim runtime files
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              vim.env.VIMRUNTIME
+              -- "${3rd}/luv/library"
+              -- "${3rd}/busted/library",
+            }
+            -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+            -- library = vim.api.nvim_get_runtime_file("", true)
+          }
+        }
+      })
+
+      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+    end
+    return true
+  end
+}
 
 -- luasnip setup
 local luasnip = require 'luasnip'
@@ -94,7 +133,7 @@ cmp.setup {
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-u>'] = cmp.mapping.scroll_docs(-4), -- Up
-    ['<C-d>'] = cmp.mapping.scroll_docs(4), -- Down
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),  -- Down
     -- C-b (back) C-f (forward) for snippet placeholder navigation.
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<space>s'] = cmp.mapping.confirm {
@@ -165,4 +204,3 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- vim.lsp.set_log_level(vim.log.levels.DEBUG)
-
