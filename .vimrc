@@ -87,6 +87,10 @@ autocmd BufEnter * :silent! Gcd
 
 " airline: remove branch name form bar
 let g:airline#extensions#branch#enabled = 0
+" abbreviate filenames in buffers
+let g:airline_section_b = ''
+let g:airline_section_x = ''
+let g:airline_stl_path_style = 'short'
 " fonts for vim-airline
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
