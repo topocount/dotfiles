@@ -167,12 +167,17 @@ alias serve="python3 -m http.server 6060"
 export NVM_DIR="$HOME/.config/nvm"
 export function setup_nvm () {
   export SHARP_IGNORE_GLOBAL_LIBVIPS=1
+  if [[ $(uname -n) -eq fw13 ]]; then
+    source /usr/share/nvm/init-nvm.sh
+  else
+    
   [ -s "$NVM_DIR/nvm.sh" ] &&
   \. "$NVM_DIR/nvm.sh" &&
   nvm use;
 
   # load nvm bash completions
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  fi
 } # This loads nvm
 
 # mac gsed compat with coreutil sed
