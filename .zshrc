@@ -170,7 +170,7 @@ export function setup_nvm () {
   if [[ $(uname -n) -eq fw13 ]]; then
     source /usr/share/nvm/init-nvm.sh
   else
-    
+
   [ -s "$NVM_DIR/nvm.sh" ] &&
   \. "$NVM_DIR/nvm.sh" &&
   nvm use;
@@ -224,25 +224,6 @@ export PATH="$PATH:/home/kevin/.local/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
-#compdef gt
-###-begin-gt-completions-###
-#
-# yargs command completion script
-#
-# Installation: /home/kevin/.yarn/bin/gt completion >> ~/.zshrc
-#    or /home/kevin/.yarn/bin/gt completion >> ~/.zprofile on OSX.
-#
-_gt_yargs_completions()
-{
-  local reply
-  local si=$IFS
-  IFS=$'
-' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" /home/kevin/.yarn/bin/gt --get-yargs-completions "${words[@]}"))
-  IFS=$si
-  _describe 'values' reply
-}
-compdef _gt_yargs_completions gt
-###-end-gt-completions-###
 
 # pnpm
 export PNPM_HOME="/home/kevin/.local/share/pnpm"
@@ -2299,7 +2280,7 @@ else
 fi
 
 if [[ $TERM_PROGRAM = "tmux" ]] && [[ -e ./package.json ]] ; then
-  setup_nvm &> /dev/null 
+  setup_nvm &> /dev/null
 fi
 
 #compdef pscale
@@ -2516,3 +2497,23 @@ if [ "$funcstack[1]" = "_pscale" ]; then
 fi
 
 alias groot="cd \$(git rev-parse --show-toplevel)"
+#compdef gt
+###-begin-gt-completions-###
+#
+# yargs command completion script
+#
+# Installation: gt completion >> ~/.zshrc
+#    or gt completion >> ~/.zprofile on OSX.
+#
+_gt_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" gt --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _gt_yargs_completions gt
+###-end-gt-completions-###
+
