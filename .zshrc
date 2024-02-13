@@ -121,6 +121,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias  nvpn=nordvpn
 alias pn=pnpm
+alias tf=terraform
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -2497,6 +2498,7 @@ if [ "$funcstack[1]" = "_pscale" ]; then
 fi
 
 alias groot="cd \$(git rev-parse --show-toplevel)"
+
 #compdef gt
 ###-begin-gt-completions-###
 #
@@ -2517,3 +2519,5 @@ _gt_yargs_completions()
 compdef _gt_yargs_completions gt
 ###-end-gt-completions-###
 
+alias disablehistory="function zshaddhistory() {  return 1 }"
+alias enablehistory="unset -f zshaddhistory"

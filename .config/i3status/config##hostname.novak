@@ -47,7 +47,7 @@ read_file ETH {
   format = %content
   format_bad = ""
   path = "~/.local/EthPrice.txt"
-  Max_characters = 15
+# Max_characters = 15
 
 }
 

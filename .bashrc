@@ -134,6 +134,8 @@ export PATH=$PATH:~/.yarn/bin
 export TODOTXT_DEFAULT_ACTION=ls
 alias t='todo.sh'
 
+# terraform
+alias tf='terraform'
 
 
 export NVM_DIR="$HOME/.nvm"

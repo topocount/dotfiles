@@ -93,6 +93,17 @@ lspconfig.solidity_ls.setup { capabilites = capabilities }
 lspconfig.tsserver.setup { capabilities = capabilities }
 lspconfig.rust_analyzer.setup { capabilities = capabilities }
 lspconfig.vimls.setup {}
+lspconfig.terraformls.setup{}
+lspconfig.eslint.setup({
+  --- ...
+  on_attach = function(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      command = "EslintFixAll",
+    })
+  end,
+})
+
 -- rome not used by any projects at the moment
 -- lspconfig.rome.setup {}
 lspconfig.lua_ls.setup {
