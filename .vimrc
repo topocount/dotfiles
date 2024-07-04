@@ -5,11 +5,7 @@ endif
 filetype off
 syntax on
 
-" These settings are unnecessary
-" set t_Co=256
-" set t_AB=^[[48;5;%dm
-" set t_AF=^[[38;5;%dm
-
+if !has('nvim')
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -19,7 +15,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
 Plug 'jparise/vim-graphql'
@@ -48,6 +44,7 @@ Plug 'patstockwell/vim-monokai-tasty'
 " All Plugins must be added before the following line
 call plug#end()            " required
 filetype plugin indent on    " required
+endif
 
 "Disable error message output for autocomplete lookups
 set shortmess+=c
@@ -70,7 +67,7 @@ set foldlevel=1
 set splitright " new vsplits open on right
 
 " keymapping prefs
-set timeoutlen=200
+set timeoutlen=500
 
 " console options
 set noshowmode
@@ -82,12 +79,8 @@ set number
 let g:prettier#autoformat = 0
 let g:prettier#autoformat_require_pragma = 0
 
-" set pwd to project root if applicable
-autocmd BufEnter * :silent! Gcd
-
 " airline: remove branch name form bar
 let g:airline#extensions#branch#enabled = 0
-let g:airline_section_x = ''
 " abbreviate filenames in buffers
 let g:airline_stl_path_style = 'short'
 " fonts for vim-airline
@@ -99,7 +92,6 @@ let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.linenr = ' '
 " let g:airline_symbols.branch = ''
 let g:airline_symbols.branch = ''
-" let g:airline_symbols.linenr = ' ¶:'
 
 " Line number coloring
 set cursorline
@@ -175,6 +167,12 @@ highlight diffRemoved ctermfg=red
 " endif
 
 if has('nvim')
+  set notermguicolors
+  colorscheme topo
+endif
+
+
+if has('nvim')
 " neovim terminal exit shortcuts
   tnoremap <Esc> <C-\><C-n>
   tnoremap <C-w> <C-\><C-n><C-w>
@@ -190,12 +188,6 @@ set wildignore+=*/docs/*
 
 " enable link following
 let g:netrw_browsex_viewer= "xdg-open"
-
-" alias for definition lookups
-let g:ale_hover_to_preview = 1
-command Agd ALEGoToDefinition -split
-command Ag ALEGoToDefinition
-command Ah ALEHover
 
 " cursor modes
 " i beam for insert mode
@@ -247,7 +239,7 @@ let &t_EI = "\<Esc>[2 q"
 " set nrformats-=octal
 
 " github copilot accept keymap
-imap <silent><script><expr> <space>g copilot#Accept("\<CR>")
+imap <silent><script><expr> <Leader>g copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 let g:copilot_filetypes = {
 \   '*': v:false,

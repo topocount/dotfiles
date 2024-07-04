@@ -15,11 +15,13 @@ order += "ipv6"
 order += "wireless _first_"
 order += "ethernet _first_"
 order += "disk /home"
+order += "disk /"
 order += "load"
 order += "cpu_temperature 0"
 order += "memory"
 order += "volume master"
 order += "read_file ETH"
+order += "read_file weather"
 # order += "path_exists VPN"
 order += "path_exists NORDLYNX"
 order += "tztime local"
@@ -51,6 +53,14 @@ read_file ETH {
 
 }
 
+read_file weather {
+  format = %content
+  format_bad = ""
+  path = "~/.local/weather.txt"
+# Max_characters = 15
+
+}
+
 # path_exists VPN {
 #      # path exists when a VPN tunnel launched by nmcli/nm-applet is active
 #      path = "/proc/sys/net/ipv4/conf/tun0"
@@ -59,7 +69,11 @@ read_file ETH {
 # }
 
 disk "/home" {
-        format = "💽%avail"
+        format = "💽%avail /home"
+}
+
+disk "/" {
+        format = "💽%avail /"
 }
 
 load {
@@ -73,7 +87,7 @@ cpu_temperature 0 {
 
 memory {
         format = "⚡%available free"
-        threshold_degraded = "1G"
+        threshold_degraded = "12G"
         format_degraded = "MEMORY < %available"
 }
 

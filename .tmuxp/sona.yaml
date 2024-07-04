@@ -1,5 +1,5 @@
 session_name: sona
-shell_command_before: setup_nvm && clear
+shell_command_before: setup_nvm && clear && source ~/Projects/sona/sona-venv/bin/activate
 windows:
   - focus: "true"
     start_directory: /home/kevin/Projects/sona/core

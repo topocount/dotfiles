@@ -122,6 +122,7 @@ source $ZSH/oh-my-zsh.sh
 alias  nvpn=nordvpn
 alias pn=pnpm
 alias tf=terraform
+alias neofetch=fastfetch
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -222,9 +223,9 @@ PERL_MM_OPT="INSTALL_BASE=/home/kevin/perl5"; export PERL_MM_OPT;
 export PATH="$PATH:/home/kevin/.local/bin"
 
 # pyenv status indicator
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+#export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+#eval "$(pyenv init -)"
 
 # pnpm
 export PNPM_HOME="/home/kevin/.local/share/pnpm"
