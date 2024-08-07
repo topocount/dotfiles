@@ -72,14 +72,17 @@ battery all {
 
 disk "/" {
         format = "💽%avail"
+        prefix_type = decimal
 }
 
 load {
-        format = "💪%1min"
+        format = "💪%1min %5min %15min"
+        max_threshold = "12.0"
 }
 
 cpu_temperature 0 {
         format = "🌡️%degrees C"
+          path = "/sys/class/hwmon/hwmon4/temp1_input"
 }
 
 memory {

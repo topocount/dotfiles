@@ -240,6 +240,7 @@ lspconfig.terraformls.setup({})
 lspconfig.yamlls.setup({})
 lspconfig.eslint.setup({})
 lspconfig.biome.setup({})
+lspconfig.vimls.setup {}
 
 -- rome not used by any projects at the moment
 -- lspconfig.rome.setup {}

@@ -89,6 +89,7 @@ let g:prettier#autoformat_require_pragma = 0
 " airline: remove branch name form bar
 let g:airline#extensions#branch#enabled = 0
 " abbreviate filenames in buffers
+
 let g:airline_stl_path_style = 'short'
 " fonts for vim-airline
 let g:airline_powerline_fonts = 0
