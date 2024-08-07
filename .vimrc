@@ -46,6 +46,13 @@ call plug#end()            " required
 filetype plugin indent on    " required
 endif
 
+" disable arrow keys
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+
+
 "Disable error message output for autocomplete lookups
 set shortmess+=c
 

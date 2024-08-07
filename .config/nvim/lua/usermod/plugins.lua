@@ -332,8 +332,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- Buffer local mappings.
 		-- See `:help vim.lsp.*` for documentation on any of the below functions
 		local opts = { buffer = ev.buf }
-		vim.keymap.set("n", "gD", "<cmd>lua require('goto-preview').goto_preview_declaration()<CR>", { noremap = true })
-		vim.keymap.set("n", "gd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { noremap = true })
+		vim.keymap.set("n", "gd", ":aboveleft split | lua vim.lsp.buf.definition()<CR>", { noremap = true })
+		vim.keymap.set("n", "gdd", ":lua vim.lsp.buf.definition()<CR>", { noremap = true })
+		vim.keymap.set("n", "gD", ":aboveleft split | lua vim.lsp.buf.declaration()<CR>", { noremap = true })
+		vim.keymap.set(
+			"n",
+			"gpD",
+			"<cmd>lua require('goto-preview').goto_preview_declaration()<CR>",
+			{ noremap = true }
+		)
+		vim.keymap.set("n", "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { noremap = true })
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 		vim.keymap.set(
@@ -370,8 +378,8 @@ require("goto-preview").setup({
 	post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
 	post_close_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook.
 	-- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
-	focus_on_open = true, -- Focus the floating window when opening it.
-	dismiss_on_move = false, -- Dismiss the floating window when moving the cursor.
+	focus_on_open = false, -- Focus the floating window when opening it.
+	dismiss_on_move = true, -- Dismiss the floating window when moving the cursor.
 	force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
 	bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
 	stack_floating_preview_windows = true, -- Whether to nest floating windows
