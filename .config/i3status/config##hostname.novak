@@ -15,6 +15,7 @@ order += "ipv6"
 order += "wireless _first_"
 order += "ethernet _first_"
 order += "disk /home"
+order += "disk /data"
 order += "disk /"
 order += "load"
 order += "cpu_temperature 0"
@@ -69,20 +70,28 @@ read_file weather {
 # }
 
 disk "/home" {
-        format = "💽%avail /home"
+        format = "💽%avail / %total /home"
+        prefix_type = decimal
+}
+
+disk "/data" {
+        format = "💽%avail /data"
+        prefix_type = decimal
 }
 
 disk "/" {
         format = "💽%avail /"
+        prefix_type = decimal
 }
 
 load {
-        format = "💪%1min"
+        format = "💪%1min %5min %15min"
+        max_threshold = "10"
 }
 
 cpu_temperature 0 {
         format = "🌡️%degrees C"
-          path = "/sys/class/hwmon/hwmon2/temp3_input"
+          path = "/sys/class/hwmon/hwmon3/temp1_input"
 }
 
 memory {

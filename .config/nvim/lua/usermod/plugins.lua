@@ -15,12 +15,19 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	"tpope/vim-sleuth",
 	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({})
+		end,
+	},
+	{
 		"rmagatti/goto-preview",
 		config = function()
 			require("goto-preview").setup({})
 		end,
 	},
-	"github/copilot.vim",
 	"rafamadriz/friendly-snippets",
 	"neovim/nvim-lspconfig",
 	"hrsh7th/nvim-cmp",
@@ -67,19 +74,20 @@ require("lazy").setup({
 	},
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
-		opts = {
-			show_help = "yes", -- Show help text for CopilotChatInPlace, default: yes
-			debug = false, -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
-			disable_extra_info = "no", -- Disable extra information (e.g: system prompt) in the response.
-			-- proxy = "socks5://127.0.0.1:3000", -- Proxies requests via https or socks.
+		branch = "canary",
+		dependencies = {
+			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
 		},
-		build = function()
-			vim.notify("Please update the remote plugins by running ':UpdateRemotePlugins', then restart Neovim.")
-		end,
-		event = "VeryLazy",
+		build = "make tiktoken", -- Only on MacOS or Linux
+		opts = {
+			debug = true, -- Enable debugging
+			-- See Configuration section for rest
+		},
+		-- See Commands section for default commands if you want to lazy load on them
 		keys = {
-			{ "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
-			{ "<leader>cct", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
+			{ "<leader>ce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
+			{ "<leader>ct", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
 			{
 				"<leader>ccv",
 				":CopilotChatVisual",
@@ -87,18 +95,18 @@ require("lazy").setup({
 				desc = "CopilotChat - Open in vertical split",
 			},
 			{
-				"<leader>ccx",
+				"<leader>cx",
 				":CopilotChatInPlace<cr>",
 				mode = "x",
 				desc = "CopilotChat - Run in-place code",
 			},
 			{
-				"<leader>ccf",
+				"<leader>cf",
 				"<cmd>CopilotChatFixDiagnostic<cr>", -- Get a fix for the diagnostic message under the cursor.
 				desc = "CopilotChat - Fix diagnostic",
 			},
 			{
-				"<leader>ccr",
+				"<leader>cr",
 				"<cmd>CopilotChatReset<cr>", -- Reset chat history and clear buffer.
 				desc = "CopilotChat - Reset chat history and clear buffer",
 			},
@@ -131,12 +139,14 @@ require("lazy").setup({
 	"vim-airline/vim-airline",
 	"vim-airline/vim-airline-themes",
 	"tfnico/vim-gradle",
-	-- {
-	--   "iamcco/markdown-preview.nvim",
-	--   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-	--   ft = { "markdown" },
-	--   build = function() vim.fn["mkdp#util#install"]() end,
-	-- },
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+	},
 	"airblade/vim-gitgutter",
 	"ryanoasis/vim-devicons",
 	"patstockwell/vim-monokai-tasty",
@@ -217,17 +227,19 @@ configs.solidity_ls = {
 	default_config = {
 		cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
 		filetypes = { "solidity" },
-		root_dir = lspconfig.util.find_git_ancestor,
+		root_dir = lspconfig.util.root_pattern("foundry.toml"),
 		single_file_support = true,
 	},
 }
 lspconfig.solidity_ls.setup({ capabilites = capabilities })
-lspconfig.tsserver.setup({ capabilities = capabilities })
+lspconfig.ts_ls.setup({ capabilities = capabilities })
 lspconfig.rust_analyzer.setup({ capabilities = capabilities })
 lspconfig.gopls.setup({})
 lspconfig.vimls.setup({})
 lspconfig.terraformls.setup({})
+lspconfig.yamlls.setup({})
 lspconfig.eslint.setup({})
+lspconfig.biome.setup({})
 
 -- rome not used by any projects at the moment
 -- lspconfig.rome.setup {}
@@ -351,16 +363,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			{ noremap = true }
 		)
 		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-		vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
-		vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-		vim.keymap.set("n", "<space>wl", function()
+		vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+		vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+		vim.keymap.set("n", "<leader>wl", function()
 			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 		end, opts)
-		vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
-		vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-		vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
+		vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
 		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-		vim.keymap.set("n", "<space>f", function()
+		vim.keymap.set("n", "<leader>f", function()
 			vim.lsp.buf.format({ async = true })
 		end, opts)
 	end,

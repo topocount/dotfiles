@@ -1,11 +1,33 @@
 session_name: hats
+shell_command_before: setup_nvm && clear
 windows:
-- focus: 'true'
-  layout: 8da5,320x82,0,0{160x82,0,0,0,159x82,161,0,1}
+
+- layout: 0d1d,365x82,0,0{245x82,0,0,5,119x82,246,0[119x41,246,0,1,119x40,246,42,6]}
+  window_name: modules-frontend
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: zsh
+  start_directory: /home/kevin/Projects/hats/modules-frontend
+- layout: bebd,365x82,0,0,0
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: zsh
+  start_directory: /home/kevin/Projects/hats/modules-sdk
+  window_name: modules-sdk
+- layout: bebf,365x82,0,0,2
   options: {}
   panes:
   - focus: 'true'
     shell_command: nvim
-  - clear
-  start_directory: /home/kevin/Projects/hats-protocol
-  window_name: hats_main
+  start_directory: /home/kevin/Projects/hats/hats-protocol
+  window_name: protocol
+- focus: 'true'
+  layout: bd80,182x82,0,0,3
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: zsh
+  start_directory: /home/kevin/Projects/hats/module-contracts
+  window_name: module-contracts

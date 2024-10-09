@@ -15,7 +15,14 @@ set $mod Mod4
 # disable mouse jumps to new windows
 # disabled for now because it's useful. warping is annoying
 no_focus [title="(?i)zoom"]
-no_focus [floating]
+# no_focus [floating]
+
+# stop mouse warping use keyboard more
+mouse_warping none
+
+focus_follows_mouse no
+
+popup_during_fullscreen smart
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -41,6 +48,7 @@ exec --no-startup-id nm-applet
 
 exec --no-startup-id pasystray
 
+exec --no-startup-id run_keybase
 
 # start dropbox
 exec --no-startup-id dropbox

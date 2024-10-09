@@ -14,9 +14,8 @@ export GDK_USE_XFT=1
 # enable redshift
 nohup redshift & disown
 
-# start light-locker
-# Not needed with GDM
-# nohup light-locker & disown
+# enable polkit
+nohup pkttyagent & disown
 
 # optimize desktop for monitor setup
 # autorandr --change

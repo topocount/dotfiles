@@ -175,6 +175,7 @@ highlight diffRemoved ctermfg=red
 
 if has('nvim')
   set notermguicolors
+  colorscheme vim
   colorscheme topo
 endif
 
@@ -186,6 +187,8 @@ if has('nvim')
 " neovim terminal buffer shortcut
   command Term :execute "vsplit | term"
 endif
+
+command Gq :G | :q
 
 
 " optimize file searching within vim by ignoring node_modules and docs
