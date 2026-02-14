@@ -144,3 +144,4 @@ export NVM_DIR="$HOME/.nvm"
 . "$HOME/.cargo/env"
 
 # [[ -s "/home/kevin/.gvm/scripts/gvm" ]] && source "/home/kevin/.gvm/scripts/gvm"
+source /home/kevin/perl5/perlbrew/etc/bashrc

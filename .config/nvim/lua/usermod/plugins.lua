@@ -15,12 +15,21 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	"tpope/vim-sleuth",
 	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({})
-		end,
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		opts = {
+			terminal = {
+				snacks_win_opts = {
+					wo = {
+						winhighlight = "Normal:ClaudeCodeNormal,NormalNC:ClaudeCodeNormal,FloatBorder:ClaudeCodeBorder,WinSeparator:ClaudeCodeBorder",
+					},
+				},
+			},
+		},
+		keys = {
+			{ "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude Code" },
+			{ "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send selection to Claude" },
+		},
 	},
 	{
 		"rmagatti/goto-preview",
@@ -33,7 +42,13 @@ require("lazy").setup({
 	"hrsh7th/nvim-cmp",
 	"hrsh7th/cmp-nvim-lsp",
 	"saadparwaiz1/cmp_luasnip",
-	"L3MON4D3/LuaSnip",
+	{
+		"L3MON4D3/LuaSnip",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+	},
 	{
 		"williamboman/mason.nvim",
 		config = function()
@@ -65,52 +80,12 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<Leader>t", builtin.find_files, {})
+			vim.keymap.set("n", "<leader>t", builtin.find_files, {})
 			vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 			vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
 			vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
 			vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 		end,
-	},
-	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		branch = "canary",
-		dependencies = {
-			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-		},
-		build = "make tiktoken", -- Only on MacOS or Linux
-		opts = {
-			debug = true, -- Enable debugging
-			-- See Configuration section for rest
-		},
-		-- See Commands section for default commands if you want to lazy load on them
-		keys = {
-			{ "<leader>ce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
-			{ "<leader>ct", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
-			{
-				"<leader>ccv",
-				":CopilotChatVisual",
-				mode = "x",
-				desc = "CopilotChat - Open in vertical split",
-			},
-			{
-				"<leader>cx",
-				":CopilotChatInPlace<cr>",
-				mode = "x",
-				desc = "CopilotChat - Run in-place code",
-			},
-			{
-				"<leader>cf",
-				"<cmd>CopilotChatFixDiagnostic<cr>", -- Get a fix for the diagnostic message under the cursor.
-				desc = "CopilotChat - Fix diagnostic",
-			},
-			{
-				"<leader>cr",
-				"<cmd>CopilotChatReset<cr>", -- Reset chat history and clear buffer.
-				desc = "CopilotChat - Reset chat history and clear buffer",
-			},
-		},
 	},
 	"plasticboy/vim-markdown",
 	{
@@ -151,6 +126,10 @@ require("lazy").setup({
 	"ryanoasis/vim-devicons",
 	"patstockwell/vim-monokai-tasty",
 })
+
+-- Claude Code terminal colors
+vim.api.nvim_set_hl(0, "ClaudeCodeNormal", { bg = "#1a1b26" })
+vim.api.nvim_set_hl(0, "ClaudeCodeBorder", { fg = "#ff9e64", bg = "#1a1b26" })
 
 -- treesitter setup
 require("nvim-treesitter.configs").setup({
@@ -200,11 +179,6 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
--- Add additional capabilities supported by nvim-cmp
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
-
 -- nvim-lint
 require("lint").linters_by_ft = {
 	sql = { "sqlfluff" },
@@ -222,49 +196,35 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	end,
 })
 
--- solidity config
-configs.solidity_ls = {
-	default_config = {
-		cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
-		filetypes = { "solidity" },
-		root_dir = lspconfig.util.root_pattern("foundry.toml"),
-		single_file_support = true,
-	},
-}
-lspconfig.solidity_ls.setup({ capabilites = capabilities })
-lspconfig.ts_ls.setup({ capabilities = capabilities })
-lspconfig.rust_analyzer.setup({ capabilities = capabilities })
-lspconfig.gopls.setup({})
-lspconfig.vimls.setup({})
-lspconfig.terraformls.setup({})
-lspconfig.yamlls.setup({})
-lspconfig.eslint.setup({})
-lspconfig.biome.setup({})
-lspconfig.vimls.setup {}
+-- LSP config (native vim.lsp.config API)
+vim.lsp.config("*", {
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
 
--- rome not used by any projects at the moment
--- lspconfig.rome.setup {}
-lspconfig.lua_ls.setup({
+vim.lsp.config("solidity_ls", {
+	cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
+	filetypes = { "solidity" },
+	root_markers = { "foundry.toml" },
+	single_file_support = true,
+})
+
+vim.lsp.config("lua_ls", {
 	on_init = function(client)
+		if not client.workspace_folders or not client.workspace_folders[1] then
+			return true
+		end
 		local path = client.workspace_folders[1].name
 		if not vim.loop.fs_stat(path .. "/.luarc.json") and not vim.loop.fs_stat(path .. "/.luarc.jsonc") then
 			client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
 				Lua = {
 					runtime = {
-						-- Tell the language server which version of Lua you're using
-						-- (most likely LuaJIT in the case of Neovim)
 						version = "LuaJIT",
 					},
-					-- Make the server aware of Neovim runtime files
 					workspace = {
 						checkThirdParty = false,
 						library = {
 							vim.env.VIMRUNTIME,
-							-- "${3rd}/luv/library"
-							-- "${3rd}/busted/library",
 						},
-						-- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-						-- library = vim.api.nvim_get_runtime_file("", true)
 					},
 					format = {
 						enable = true,
@@ -280,6 +240,19 @@ lspconfig.lua_ls.setup({
 		end
 		return true
 	end,
+})
+
+vim.lsp.enable({
+	"solidity_ls",
+	"ts_ls",
+	"rust_analyzer",
+	"gopls",
+	"vimls",
+	"terraformls",
+	"yamlls",
+	"eslint",
+	"biome",
+	"lua_ls",
 })
 
 -- luasnip setup
@@ -298,8 +271,7 @@ cmp.setup({
 		["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
 		-- C-b (back) C-f (forward) for snippet placeholder navigation.
 		["<C-Space>"] = cmp.mapping.complete(),
-		["<Leader>s"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
+		["<CR>"] = cmp.mapping.confirm({
 			select = true,
 		}),
 		["<Tab>"] = cmp.mapping(function(fallback)

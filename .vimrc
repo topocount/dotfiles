@@ -127,7 +127,7 @@ vnoremap <C-y> "+y
 set shell=/bin/zsh
 
 " auto-copy visual selections
-set go+=a
+" set go+=a
 
 " Markdown Syntax concealing
 set conceallevel=0

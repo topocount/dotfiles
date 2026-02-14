@@ -87,7 +87,17 @@ action = "DecreaseFontSize"
 key = "Minus"
 mods = "Alt"
 
+[[keyboard.bindings]]
+action = "Copy"
+key = "C"
+mods = "Control|Shift"
+
 [window]
 decorations = "full"
 decorations_theme_variant = "Dark"
 opacity = 0.85
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001b\r"
