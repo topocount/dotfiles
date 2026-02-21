@@ -127,7 +127,9 @@ vnoremap <C-y> "+y
 set shell=/bin/zsh
 
 " auto-copy visual selections
-" set go+=a
+if !has('nvim')
+ set go+=a
+endif
 
 " Markdown Syntax concealing
 set conceallevel=0

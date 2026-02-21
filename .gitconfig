@@ -1,9 +1,8 @@
 [user]
 	email = 17910833+topocount@users.noreply.github.com
-	name = Kevin Siegler
-	signingkey = 4C2753E07C0A44A9
+	name = topocount
 [commit]
-	gpgsign = false
+	gpgsign = true
 [alias]
 	please = push --force-with-lease
 	contributions = log --grep=\"[Bb]ump\" --invert-grep --pretty=oneline
@@ -31,3 +30,8 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = /Users/kevin/.config/git/allowed_signers
+	defaultkeycommand = ssh-add -L | grep kevin@topoMBP.local
