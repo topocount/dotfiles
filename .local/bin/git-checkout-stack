@@ -3,56 +3,59 @@ set -euo pipefail
 
 target="${1:-}"
 if [ -z "$target" ]; then
-  echo "usage: git cos <branch>" >&2
+  echo "usage: git checkout-stack <branch>" >&2
   exit 1
 fi
 
-# Resolve a ref for the target branch (prefer local, fall back to origin/)
+# Determine which remote this stack belongs to. Preference order:
+#   1. branch.<target>.remote, if $target is already a local branch (set
+#      automatically whenever a branch was created with --track).
+#   2. $GIT_COS_REMOTE, if you want to override/force a specific remote.
+#   3. "origin" as a fallback default.
+remote=""
+if git show-ref --verify --quiet "refs/heads/$target"; then
+  remote="$(git config --get "branch.$target.remote" 2>/dev/null || true)"
+fi
+remote="${remote:-${GIT_COS_REMOTE:-origin}}"
+
 if git show-ref --verify --quiet "refs/heads/$target"; then
   target_ref="refs/heads/$target"
-elif git show-ref --verify --quiet "refs/remotes/origin/$target"; then
-  target_ref="refs/remotes/origin/$target"
+elif git show-ref --verify --quiet "refs/remotes/$remote/$target"; then
+  target_ref="refs/remotes/$remote/$target"
 else
-  echo "error: branch '$target' not found locally or on origin/" >&2
+  echo "error: branch '$target' not found locally or on $remote/" >&2
   exit 1
 fi
 
-# Determine the default branch (whatever origin/HEAD points at, else main/master)
-default="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##' || true)"
+default="$(git symbolic-ref --short "refs/remotes/$remote/HEAD" 2>/dev/null | sed "s#^$remote/##" || true)"
 if [ -z "$default" ]; then
   for d in main master; do
-    if git show-ref --verify --quiet "refs/remotes/origin/$d"; then
+    if git show-ref --verify --quiet "refs/remotes/$remote/$d"; then
       default="$d"
       break
     fi
   done
 fi
 if [ -z "$default" ]; then
-  echo "error: could not determine default branch (no origin/HEAD, no main, no master)" >&2
+  echo "error: could not determine default branch (no $remote/HEAD, no main, no master)" >&2
   exit 1
 fi
 
-# This is what makes it stop at the default branch: the merge-base is the
-# exact commit where the stack diverged from origin/<default>.
-base="$(git merge-base "refs/remotes/origin/$default" "$target_ref")"
-echo "stack base: origin/$default @ $(git log -1 --format='%h %s' "$base")"
+base="$(git merge-base "refs/remotes/$remote/$default" "$target_ref")"
+echo "stack base: $remote/$default @ $(git log -1 --format='%h %s' "$base")"
 
-# Walk commits from just-after-base up to the target (oldest first), and
-# set up a local tracking branch for every remote branch tip passed along the way.
-git rev-list --reverse "$base..$target_ref" | while read -r sha; do
-  branch="$(git for-each-ref --points-at "$sha" --format='%(refname:short)' 'refs/remotes/origin/*' \
-            | grep -v '^origin/HEAD$' | sed 's#^origin/##' | head -n1)"
+while read -r sha; do
+  branch="$(git for-each-ref --points-at "$sha" --format='%(refname:short)' "refs/remotes/$remote" \
+              | grep -v "^$remote/HEAD$" | sed "s#^$remote/##" | head -n1 || true)"
   [ -n "$branch" ] || continue
 
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     echo "  = $branch (already local)"
   else
-    git branch --track "$branch" "origin/$branch" >/dev/null
-    echo "  + $branch (created, tracking origin/$branch)"
+    git branch --track "$branch" "$remote/$branch" >/dev/null
+    echo "  + $branch (created, tracking $remote/$branch)"
   fi
-done
+done < <(git rev-list --reverse "$base..$target_ref")
 
 git checkout "$target"
 
-
-# vim: set ft=sh
