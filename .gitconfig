@@ -10,6 +10,7 @@
 	gone = ! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
 	root = rev-parse --show-toplevel
 	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
+	cos = !git checkout-stack
 [core]
 	excludesfile = /home/kevin/.gitignore_global
 	editor = nvim
@@ -35,3 +36,9 @@
 [gpg "ssh"]
 	allowedSignersFile = /Users/kevin/.config/git/allowed_signers
 	defaultkeycommand = ssh-add -L | grep kevin@topoMBP.local
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

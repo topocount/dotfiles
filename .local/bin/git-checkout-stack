@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+target="${1:-}"
+if [ -z "$target" ]; then
+  echo "usage: git cos <branch>" >&2
+  exit 1
+fi
+
+# Resolve a ref for the target branch (prefer local, fall back to origin/)
+if git show-ref --verify --quiet "refs/heads/$target"; then
+  target_ref="refs/heads/$target"
+elif git show-ref --verify --quiet "refs/remotes/origin/$target"; then
+  target_ref="refs/remotes/origin/$target"
+else
+  echo "error: branch '$target' not found locally or on origin/" >&2
+  exit 1
+fi
+
+# Determine the default branch (whatever origin/HEAD points at, else main/master)
+default="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##' || true)"
+if [ -z "$default" ]; then
+  for d in main master; do
+    if git show-ref --verify --quiet "refs/remotes/origin/$d"; then
+      default="$d"
+      break
+    fi
+  done
+fi
+if [ -z "$default" ]; then
+  echo "error: could not determine default branch (no origin/HEAD, no main, no master)" >&2
+  exit 1
+fi
+
+# This is what makes it stop at the default branch: the merge-base is the
+# exact commit where the stack diverged from origin/<default>.
+base="$(git merge-base "refs/remotes/origin/$default" "$target_ref")"
+echo "stack base: origin/$default @ $(git log -1 --format='%h %s' "$base")"
+
+# Walk commits from just-after-base up to the target (oldest first), and
+# set up a local tracking branch for every remote branch tip passed along the way.
+git rev-list --reverse "$base..$target_ref" | while read -r sha; do
+  branch="$(git for-each-ref --points-at "$sha" --format='%(refname:short)' 'refs/remotes/origin/*' \
+            | grep -v '^origin/HEAD$' | sed 's#^origin/##' | head -n1)"
+  [ -n "$branch" ] || continue
+
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    echo "  = $branch (already local)"
+  else
+    git branch --track "$branch" "origin/$branch" >/dev/null
+    echo "  + $branch (created, tracking origin/$branch)"
+  fi
+done
+
+git checkout "$target"
+
+
+# vim: set ft=sh
