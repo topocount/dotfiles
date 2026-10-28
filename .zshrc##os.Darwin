@@ -1,0 +1,97 @@
+export PATH='/Users/kevin/.duckdb/cli/latest':$PATH
+
+# Start ssh-agent if not already running
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)"
+fi
+
+alias vi=nvim
+export EDITOR=nvim
+
+# Colored man pages (replaces OMZ colored-man-pages plugin)
+export LESS_TERMCAP_mb=$'\e[1;31m'
+export LESS_TERMCAP_md=$'\e[1;36m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;33m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;32m'
+export LESS_TERMCAP_ue=$'\e[0m'
+
+# LS colors (from topo theme)
+export LSCOLORS="exfxcxdxbxegedabagacad"
+export LS_COLORS='di=34;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
+export GREP_COLORS='mt=1;33'
+alias ls="ls --color=auto"
+
+# zsh-autosuggestions
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Lazy-load NVM
+export NVM_DIR=~/.local/nvm
+nvm() {
+    unfunction nvm node npm npx 2>/dev/null
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    nvm "$@"
+}
+node() { nvm --version >/dev/null 2>&1; node "$@" }
+npm()  { nvm --version >/dev/null 2>&1; npm "$@" }
+npx()  { nvm --version >/dev/null 2>&1; npx "$@" }
+
+# Completions: _op, _cargo, Docker Desktop, homebrew
+fpath=(
+    /Users/kevin/.zsh/completions
+    /Users/kevin/.docker/completions
+    /opt/homebrew/share/zsh/site-functions
+    $fpath
+)
+
+# Cached compinit — only regenerates once per day
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+
+# Kafka
+export PATH="/opt/homebrew/opt/kafka/libexec/bin:$PATH"
+export CLASSPATH="$CLASSPATH:$HOME/.kafka/libs/aws-msk-iam-auth-2.3.3-all.jar"
+
+alias ow="$HOME/repos/neynar-mono/open-workspace.sh"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=1000000
+HISTORY_IGNORE="(doppler secrets set*)"
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+
+# History search with up/down (type prefix, then arrow keys to filter)
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# Syntax highlighting (must be near end of zshrc)
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Starship prompt (replaces OMZ theme)
+eval "$(starship init zsh)"
+
+# pnpm
+export PNPM_HOME="/Users/kevin/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# python
+alias pip=pip3

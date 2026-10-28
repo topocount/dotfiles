@@ -1,0 +1,7 @@
+# See https://starship.rs/config/ for options
+
+[hostname]
+ssh_only = true
+
+[gcloud]
+disabled = true
