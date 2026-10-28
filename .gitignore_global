@@ -2,4 +2,5 @@
 .gitignore
 **/TOPO_QUESTIONS.md
 **/CLAUDE.md
-**/.claude
+scratch/
+**.claude/

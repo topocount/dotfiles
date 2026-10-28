@@ -176,8 +176,8 @@ highlight diffRemoved ctermfg=red
   highlight DiffChange ctermfg=Black
 " endif
 
-if has('nvim')
-  set notermguicolors
+if !has('nvim')
+  set termguicolors
   colorscheme vim
   colorscheme topo
 endif

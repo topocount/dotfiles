@@ -373,3 +373,6 @@ require("goto-preview").setup({
 })
 
 -- vim.lsp.set_log_level(vim.log.levels.DEBUG)
+
+vim.opt.termguicolors = true
+vim.cmd.colorscheme("topo")

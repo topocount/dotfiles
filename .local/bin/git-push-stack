@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=0
+target=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -n|--dry-run) dry_run=1 ;;
+    -h|--help)
+      echo "usage: git push-stack [-n|--dry-run] [branch]" >&2
+      exit 0
+      ;;
+    -*)
+      echo "error: unknown option '$1'" >&2
+      echo "usage: git push-stack [-n|--dry-run] [branch]" >&2
+      exit 1
+      ;;
+    *)
+      if [ -n "$target" ]; then
+        echo "error: too many arguments" >&2
+        exit 1
+      fi
+      target="$1"
+      ;;
+  esac
+  shift
+done
+
+# Default to whatever is checked out — the usual case is "I just rebased, push it".
+if [ -z "$target" ]; then
+  target="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+  if [ -z "$target" ]; then
+    echo "error: detached HEAD; pass a branch explicitly" >&2
+    exit 1
+  fi
+fi
+
+if ! git show-ref --verify --quiet "refs/heads/$target"; then
+  echo "error: local branch '$target' not found" >&2
+  exit 1
+fi
+
+# Determine which remote this stack belongs to. Same preference order as
+# git-checkout-stack: branch config, then $GIT_COS_REMOTE, then origin.
+remote="$(git config --get "branch.$target.remote" 2>/dev/null || true)"
+remote="${remote:-${GIT_COS_REMOTE:-origin}}"
+
+default="$(git symbolic-ref --short "refs/remotes/$remote/HEAD" 2>/dev/null | sed "s#^$remote/##" || true)"
+if [ -z "$default" ]; then
+  for d in main master; do
+    if git show-ref --verify --quiet "refs/remotes/$remote/$d"; then
+      default="$d"
+      break
+    fi
+  done
+fi
+if [ -z "$default" ]; then
+  echo "error: could not determine default branch (no $remote/HEAD, no main, no master)" >&2
+  exit 1
+fi
+
+base="$(git merge-base "refs/remotes/$remote/$default" "refs/heads/$target")"
+echo "stack base: $remote/$default @ $(git log -1 --format='%h %s' "$base")"
+
+# Read the remote with ls-remote rather than fetching. A fetch would advance the
+# remote-tracking refs, and --force-with-lease leases against exactly those --
+# so fetching first silently turns the lease into a plain --force and lets us
+# clobber whatever a teammate pushed since. ls-remote touches no refs, so the
+# lease keeps comparing against our last-known view while we still get to see
+# (and refuse) any upstream movement.
+remote_state="$(git ls-remote --heads "$remote")"
+remote_head_sha() {
+  printf '%s\n' "$remote_state" | awk -v ref="refs/heads/$1" '$2 == ref { print $1 }'
+}
+
+leases=()
+branches=()
+moved=()
+while read -r sha; do
+  while read -r branch; do
+    [ -n "$branch" ] || continue
+
+    # What we believe the remote holds, i.e. what the lease will be checked against.
+    known=""
+    if git show-ref --verify --quiet "refs/remotes/$remote/$branch"; then
+      known="$(git rev-parse "refs/remotes/$remote/$branch")"
+    fi
+    actual="$(remote_head_sha "$branch")"
+
+    if [ "$known" != "$actual" ]; then
+      moved+=("$branch")
+      continue
+    fi
+
+    local_sha="$(git rev-parse "refs/heads/$branch")"
+    if [ "$local_sha" = "$known" ]; then
+      echo "  = $branch (up to date)"
+      continue
+    fi
+
+    if [ -n "$known" ]; then
+      echo "  ↑ $branch ($(git rev-parse --short "$known") -> $(git rev-parse --short "$local_sha"))"
+    else
+      echo "  + $branch (new on $remote)"
+    fi
+    leases+=("--force-with-lease=refs/heads/$branch:$known")
+    branches+=("$branch")
+  done < <(git for-each-ref --points-at "$sha" --format='%(refname:short)' refs/heads)
+done < <(git rev-list --reverse "$base..refs/heads/$target")
+
+if [ ${#moved[@]} -gt 0 ]; then
+  echo >&2
+  echo "error: these branches moved on $remote since your last fetch:" >&2
+  for branch in "${moved[@]}"; do
+    echo "  $branch  ($(remote_head_sha "$branch" | cut -c1-7))" >&2
+  done
+  echo >&2
+  echo "refusing to push -- someone else's work would be lost." >&2
+  echo "run 'git fetch $remote' and rebase onto the new commits first." >&2
+  exit 1
+fi
+
+if [ ${#branches[@]} -eq 0 ]; then
+  echo "nothing to push"
+  exit 0
+fi
+
+# One atomic push for the whole stack: all branches land or none do. Each lease
+# names the sha we expect to overwrite, so a concurrent push rejects everything.
+if [ "$dry_run" -eq 1 ]; then
+  echo
+  echo "dry run; would run:"
+  echo "  git push --atomic ${leases[*]} --set-upstream $remote ${branches[*]}"
+  exit 0
+fi
+
+git push --atomic "${leases[@]}" --set-upstream "$remote" "${branches[@]}"

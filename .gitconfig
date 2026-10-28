@@ -11,8 +11,9 @@
 	root = rev-parse --show-toplevel
 	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
 	cos = !git checkout-stack
+	ps = !git push-stack
 [core]
-	excludesfile = /home/kevin/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	editor = nvim
 [pull]
 	ff = only
