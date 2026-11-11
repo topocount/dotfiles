@@ -1,4 +1,4 @@
-set runtimepath^=/home/kevin/.vim runtimepath+=/home/kevin/.vim/after runtimepath+=/home/kevin/.vim/after/ftplugin
+set runtimepath^=~/.vim runtimepath+=~/.vim/after runtimepath+=~/.vim/after/ftplugin
 lua require('usermod.plugins')
 
 source ~/.vimrc

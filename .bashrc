@@ -143,5 +143,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 . "$HOME/.cargo/env"
 
-# [[ -s "/home/kevin/.gvm/scripts/gvm" ]] && source "/home/kevin/.gvm/scripts/gvm"
-source /home/kevin/perl5/perlbrew/etc/bashrc
+# [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+[ -s "$HOME/perl5/perlbrew/etc/bashrc" ] && source "$HOME/perl5/perlbrew/etc/bashrc"
