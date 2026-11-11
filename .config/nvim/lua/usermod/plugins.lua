@@ -2,14 +2,25 @@ vim.g.mapleader = "\\"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
+	-- Check out the lazy.nvim commit pinned in lazy-lock.json. A fresh clone only has upstream refs,
+	-- so a pin that isn't upstream code fails here instead of running.
+	local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+	local commit = vim.json.decode(table.concat(vim.fn.readfile(lockfile), "\n"))["lazy.nvim"].commit
+	local out = vim.fn.system({
 		"git",
 		"clone",
 		"--filter=blob:none",
+		"--no-checkout",
 		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
 		lazypath,
 	})
+	if vim.v.shell_error == 0 then
+		out = vim.fn.system({ "git", "-C", lazypath, "checkout", "--quiet", commit })
+	end
+	if vim.v.shell_error ~= 0 then
+		vim.fn.delete(lazypath, "rf")
+		error("lazy.nvim bootstrap failed:\n" .. out)
+	end
 end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
@@ -50,7 +61,7 @@ require("lazy").setup({
 		build = "make install_jsregexp",
 	},
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		config = function()
 			require("mason").setup()
 		end,
@@ -59,21 +70,6 @@ require("lazy").setup({
 	{
 		"mfussenegger/nvim-lint",
 	},
-	{
-		"kupospelov/nvim-fmt",
-		config = function()
-			require("fmt").setup({
-				formatters = {
-					["go"] = "gofmt",
-					["lua"] = "stylua --search-parent-directories -",
-				},
-				options = {
-					create_autocmd = true,
-				},
-			})
-		end,
-	},
-	"nvim-treesitter/nvim-treesitter",
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.5",
@@ -87,24 +83,9 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 		end,
 	},
-	"plasticboy/vim-markdown",
-	{
-		"ray-x/go.nvim",
-		dependencies = { -- optional packages
-			"ray-x/guihua.lua",
-			"neovim/nvim-lspconfig",
-			"nvim-treesitter/nvim-treesitter",
-		},
-		config = function()
-			require("go").setup()
-		end,
-		event = { "CmdlineEnter" },
-		ft = { "go", "gomod" },
-		build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
-	},
+	"preservim/vim-markdown",
 	"rust-lang/rust.vim",
 	"jparise/vim-graphql",
-	"maxmellon/vim-jsx-pretty",
 	"prettier/vim-prettier",
 	"tpope/vim-fugitive",
 	"tpope/vim-surround",
@@ -113,15 +94,6 @@ require("lazy").setup({
 	"tpope/vim-rhubarb",
 	"vim-airline/vim-airline",
 	"vim-airline/vim-airline-themes",
-	"tfnico/vim-gradle",
-	{
-		"iamcco/markdown-preview.nvim",
-		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-		ft = { "markdown" },
-		build = function()
-			vim.fn["mkdp#util#install"]()
-		end,
-	},
 	"airblade/vim-gitgutter",
 	"ryanoasis/vim-devicons",
 	"patstockwell/vim-monokai-tasty",
@@ -131,52 +103,46 @@ require("lazy").setup({
 vim.api.nvim_set_hl(0, "ClaudeCodeNormal", { bg = "#1a1b26" })
 vim.api.nvim_set_hl(0, "ClaudeCodeBorder", { fg = "#ff9e64", bg = "#1a1b26" })
 
--- treesitter setup
-require("nvim-treesitter.configs").setup({
-	-- A list of parser names, or "all" (the five listed parsers should always be installed)
-	ensure_installed = { "typescript", "rust", "lua", "javascript", "solidity" },
+-- Neovim's markdown ftplugin starts treesitter; keep vim-markdown's regex highlighting instead.
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function(ev)
+		vim.treesitter.stop(ev.buf)
+	end,
+})
 
-	-- Install parsers synchronously (only applied to `ensure_installed`)
-	sync_install = false,
-
-	-- Automatically install missing parsers when entering buffer
-	-- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-	auto_install = false,
-
-	-- List of parsers to ignore installing (for "all")
-	-- ignore_install = { "javascript" },
-	ignore_install = { "markdown" },
-
-	---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-	-- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-	highlight = {
-		enable = true,
-
-		-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-		-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-		-- the name of the parser)
-		-- list of language that will be disabled
-		-- disable = { "c", "rust" },
-		-- disable = { "c", "rust" },
-		-- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-		disable = function(lang, buf)
-			local max_filesize = 100 * 1024 -- 100 KB
-			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-			if ok and stats and stats.size > max_filesize then
-				return true
-			end
-			if lang == "markdown" then
-				return true
-			end
-		end,
-
-		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-		-- Using this option may slow down your editor, and you may see some duplicate highlights.
-		-- Instead of true it can also be a list of languages
-		additional_vim_regex_highlighting = false,
-	},
+-- Format on save by piping the buffer through a formatter.
+local formatters = {
+	go = { "gofmt" },
+	lua = { "stylua", "--search-parent-directories", "-" },
+}
+vim.api.nvim_create_autocmd("BufWritePre", {
+	group = vim.api.nvim_create_augroup("UserFormatOnSave", {}),
+	callback = function(ev)
+		local cmd = formatters[vim.bo[ev.buf].filetype]
+		if not cmd or vim.fn.executable(cmd[1]) == 0 then
+			return
+		end
+		local lines = vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)
+		local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(ev.buf))
+		local res = vim.system(cmd, {
+			stdin = table.concat(lines, "\n") .. "\n",
+			cwd = vim.fn.isdirectory(dir) == 1 and dir or nil,
+		}):wait()
+		if res.code ~= 0 then
+			vim.notify(cmd[1] .. ": " .. (res.stderr or ""), vim.log.levels.WARN)
+			return
+		end
+		local formatted = vim.split(res.stdout, "\n")
+		if formatted[#formatted] == "" then
+			table.remove(formatted)
+		end
+		if not vim.deep_equal(lines, formatted) then
+			local view = vim.fn.winsaveview()
+			vim.api.nvim_buf_set_lines(ev.buf, 0, -1, false, formatted)
+			vim.fn.winrestview(view)
+		end
+	end,
 })
 
 -- nvim-lint
